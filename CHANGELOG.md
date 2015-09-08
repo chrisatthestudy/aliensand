@@ -6,6 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - First iteration
 
+## [0.0.2] - 2015-09-08
+### Changed
+- Moved the boids and vector code out to separate files
+- Updated the README.md file
+
 Copyright 2015, chrisatthestudy <chris@the-study.net>
 
 Copying and distribution of this file, with or without modification, are
