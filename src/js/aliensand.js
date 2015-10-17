@@ -22,6 +22,58 @@ var AlienSand = (function() {
                   window.setTimeout(callback, 16.666);
               };
     }());
+
+    /*
+     *  ============================================================================
+     *  Sun()
+     *  ============================================================================
+     *  Simple representation of the sun.
+     *  ----------------------------------------------------------------------------
+     */
+    var Sun = function( options ) {
+
+	var self = {
+
+	    setup: function( options ) {
+		self.context = options.context;
+		self.angle_units = (2 * Math.PI) / 6400.0;
+		self.angle = (self.angle_units * 6400.0);
+		self.halo_step = 1;
+	    },
+
+	    update: function( ) {
+	    },
+
+	    draw: function( ) {
+		// x(t) = r cos(t) + j       y(t) = r sin(t) + k
+		var x = (400 * Math.cos(self.angle)) + 150;
+		var y = (800 * Math.sin(self.angle)) + 250;
+                self.context.fillStyle = "#004400";
+		self.context.beginPath();
+		self.context.arc(x, y, 20, 0, Math.PI * 2, false);
+		self.context.fill();
+		
+		self.context.beginPath();
+		self.context.lineWidth = 10;
+                self.context.strokeStyle = 'rgba(0,64,0,' + (1.0 - self.halo_step / 10) + ')';
+		console.log(self.context.strokeStyle);
+		self.context.arc(x, y, 20 + self.halo_step, 0, Math.PI * 2, false);
+		self.context.stroke();
+		
+		self.halo_step = self.halo_step + 0.1;
+		if (self.halo_step > 10) {
+		    self.halo_step = 1;
+		}
+		self.angle = self.angle - self.angle_units;
+		if (self.angle < 0) {
+		    self.angle = (self.angle_units * 6400.0);
+		}
+		self.context.lineWidth = 1;
+	    }
+	};
+	self.setup( options );
+	return self;
+    };
     
     /*
      *  ============================================================================
@@ -53,6 +105,7 @@ var AlienSand = (function() {
 
                 var scale = 3.0;
                 self.tardis = Tardis(self.context, self.canvas.width - 150, self.canvas.height - (40 + (scale * 51)), scale)
+		self.sun = Sun( { context: self.context } );
                 
                 self.running = true;
                 
@@ -83,6 +136,7 @@ var AlienSand = (function() {
                         }
                     }
                     self.flock.update( );
+		    self.sun.update( );
                     self.ticks = 0;
                 }
             },
@@ -95,6 +149,9 @@ var AlienSand = (function() {
                 // Draw the 'ground'
                 self.context.fillStyle = "#222922";
                 self.context.fillRect(0, 0, self.canvas.width, self.canvas.height);
+
+		self.sun.draw( );
+		
                 self.context.fillStyle = "#004400";
                 self.context.fillRect(0, self.canvas.height - 50, self.canvas.width, 50);
                 // Draw the boids
